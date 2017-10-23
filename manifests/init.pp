@@ -22,10 +22,11 @@ class nexus (
     apache::port { 'nexus-https': port => '443' }
 
     apache::vhost::proxy { 'nexus-https-proxy':
-      serveraliases => 'nexus-https-proxy',
-      port          => 443,
-      ssl           => true,
-      dest          => 'http://localhost:8081',
+      serveraliases  => 'nexus-https-proxy',
+      port           => 443,
+      ssl            => true,
+      dest           => 'http://localhost:8081',
+      request_header => 'set X-Forwarded-Proto "https"'
     }
   }
 
