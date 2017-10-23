@@ -3,6 +3,7 @@ class nexus (
   $dest    = '/var/www',
   $version = '2.12.1-01',
   $port    = '8081',
+  $ssl     = false,
 ) {
   $source_url = "${source}/nexus-${version}-bundle.tar.gz"
 
@@ -15,6 +16,17 @@ class nexus (
     serveraliases => 'nexus-proxy',
     port          => 80,
     dest          => 'http://localhost:8081',
+  }
+
+  if $ssl {
+    apache::port { 'nexus-https': port => '443' }
+
+    apache::vhost::proxy { 'nexus-https-proxy':
+      serveraliases => 'nexus-https-proxy',
+      port          => 443,
+      ssl           => true,
+      dest          => 'http://localhost:8081',
+    }
   }
 
   file { $dest:
