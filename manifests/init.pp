@@ -1,9 +1,10 @@
 class nexus (
-  $source  = 'http://buildsources.delivery.puppetlabs.net/tools/',
-  $dest    = '/var/www',
-  $version = '2.12.1-01',
-  $port    = '8081',
-  $ssl     = false,
+  $source     = 'http://buildsources.delivery.puppetlabs.net/tools/',
+  $dest       = '/var/www',
+  $version    = '2.12.1-01',
+  $port       = '8081',
+  $ssl        = false,
+  $servername = '',
 ) {
   $source_url = "${source}/nexus-${version}-bundle.tar.gz"
 
@@ -13,6 +14,7 @@ class nexus (
   apache::port { 'nexus-proxy': port => '80' }
 
   apache::vhost::proxy { 'nexus-proxy':
+    servername    => $servername,
     serveraliases => 'nexus-proxy',
     port          => 80,
     dest          => 'http://localhost:8081',
@@ -22,6 +24,7 @@ class nexus (
     apache::port { 'nexus-https': port => '443' }
 
     apache::vhost::proxy { 'nexus-https-proxy':
+      servername     => $servername,
       serveraliases  => 'nexus-https-proxy',
       port           => 443,
       ssl            => true,
